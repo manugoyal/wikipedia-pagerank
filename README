@@ -1,7 +1,8 @@
 Simple English Wikipedia Page Rank
 
 Database:
- - To create the tables, create a database in mysql and source the ".sql" files
+ - To create the tables, create a database called `simple_english_wikipedia` in
+   mysql and source the ".sql" files
  - page_essential is a table of all the pages
    - `page_id` is the unique id of the page
    - `page_namespace` is the namespace of the article (like the category)
@@ -9,3 +10,11 @@ Database:
  - pl_essential is a table of all the links
    - `pl_from_id` is the id of the source page
    - `pl_to_id` is the id of the target page (turns out there are no repeated pairs of links)
+
+Build Structures:
+  - Go to the build_structures directory and run 'go run build_structures.go'"
+
+Compute Pagerank:
+  - Copy the generated .out files from the build_structures directory into the
+    compute_pagerank directory
+  - Run 'go run compute_pagerank.go' to run pagerank on the dataset
