@@ -1,0 +1,11 @@
+Simple English Wikipedia Page Rank
+
+Database:
+ - To create the tables, create a database in mysql and source the ".sql" files
+ - page_essential is a table of all the pages
+   - `page_id` is the unique id of the page
+   - `page_namespace` is the namespace of the article (like the category)
+   - `page_title` is the name of the article (together, the namespace and title form a unique identifier for the page)
+ - pl_essential is a table of all the links
+   - `pl_from_id` is the id of the source page
+   - `pl_to_id` is the id of the target page (turns out there are no repeated pairs of links)
