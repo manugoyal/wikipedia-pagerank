@@ -30,8 +30,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
-	"encoding/binary"
-	"os"
+	"../util"
 )
 
 func get_array_of_ints(db *sql.DB, query string,
@@ -86,28 +85,6 @@ func populate_outlinks_count(db *sql.DB, outlinks_count []uint32) error {
 	return rows.Err()
 }
 
-func write_array(filename string, arr []uint32) error {
-	// We first write the length, then the data as a binary stream, in
-	// LittleEndian order
-	f, err := os.Create(filename)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	if err = binary.Write(f, binary.LittleEndian, uint32(len(arr)));
-	err != nil {
-		return err
-	}
-
-	for _, v := range arr {
-		if err = binary.Write(f, binary.LittleEndian, v); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 func main() {
 	db, err := sql.Open("mysql", "root@/simple_english_wikipedia")
 	if err != nil {
@@ -159,11 +136,11 @@ func main() {
 	}
 
 	fmt.Println("Writing backlinks")
-	write_array("backlinks.out", backlinks)
+	util.WriteArray("backlinks.out", backlinks)
 	fmt.Println("Writing backlinks count")
-	write_array("backlinks_count.out", backlinks_count)
+	util.WriteArray("backlinks_count.out", backlinks_count)
 	fmt.Println("Writing backlinks cumsum")
-	write_array("backlinks_cumsum.out", backlinks_cumsum)
+	util.WriteArray("backlinks_cumsum.out", backlinks_cumsum)
 	fmt.Println("Writing outlinks_count")
-	write_array("outlinks_count.out", outlinks_count)
+	util.WriteArray("outlinks_count.out", outlinks_count)
 }

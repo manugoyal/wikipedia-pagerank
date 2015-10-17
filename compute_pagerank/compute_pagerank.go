@@ -1,16 +1,16 @@
 // Using the data in backlinks, backlinks_count, backlinks_cumsum, and
-// outlinks_count, we compute the pagerank for each page id.
+// outlinks_count, we compute the pagerank for each page id, and write it as an
+// array to pageranks.out
 package main
 
 import (
 	"fmt"
 	"log"
-	"encoding/binary"
-	"os"
 	"sync/atomic"
 	"sync"
 	"math"
 	"runtime"
+	"../util"
 )
 
 const (
@@ -19,26 +19,6 @@ const (
 	// The threshold for finishing iteration
 	CHANGE_THRESHOLD = 0.0000001
 )
-
-
-func read_array(filename string) ([]uint32, error) {
-	// The first number in the file should be the length of the subsequent
-	// array
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	var length uint32
-	if err = binary.Read(f, binary.LittleEndian, &length); err != nil {
-		return nil, err
-	}
-
-	arr := make([]uint32, length)
-	err = binary.Read(f, binary.LittleEndian, arr)
-	return arr, err
-}
 
 // Updates the pagerank for every page in `pagerank`. The `pagerank` array
 // actually contains floating point numbers, but in order to use atomic compare
@@ -88,19 +68,19 @@ func compute_difference(pageranks, old_pageranks []uint32) (diff float32) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	backlinks, err := read_array("backlinks.out")
+	backlinks, err := util.ReadArray("backlinks.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	backlinks_count, err := read_array("backlinks_count.out")
+	backlinks_count, err := util.ReadArray("backlinks_count.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	backlinks_cumsum, err := read_array("backlinks_cumsum.out")
+	backlinks_cumsum, err := util.ReadArray("backlinks_cumsum.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	outlinks_count, err := read_array("outlinks_count.out")
+	outlinks_count, err := util.ReadArray("outlinks_count.out")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -143,13 +123,8 @@ func main() {
 		copy(old_pageranks, pageranks)
 	}
 
-	for i := 0; i < 10; i++ {
-		fmt.Println(i, math.Float32frombits(pageranks[i]))
-	}
 
-	sum := float32(0)
-	for _, rank := range pageranks {
-		sum += math.Float32frombits(rank)
-	}
-	fmt.Println(sum)
+	// Write the pageranks
+	fmt.Println("Writing pageranks")
+	util.WriteArray("pageranks.out", pageranks)
 }
