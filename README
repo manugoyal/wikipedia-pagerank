@@ -1,5 +1,10 @@
 Simple English Wikipedia Page Rank
 
+Dependencies:
+ - mysql server and client
+ - golang
+ - Go mysql package (run "go get github.com/go-sql-driver/mysql") to install
+
 Database:
  - To create the tables, create a database called `simple_english_wikipedia` in
    mysql and source the ".sql" files
