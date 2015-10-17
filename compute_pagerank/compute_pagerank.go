@@ -88,19 +88,19 @@ func compute_difference(pageranks, old_pageranks []uint32) (diff float32) {
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	backlinks, err := read_array("backlinks")
+	backlinks, err := read_array("backlinks.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	backlinks_count, err := read_array("backlinks_count")
+	backlinks_count, err := read_array("backlinks_count.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	backlinks_cumsum, err := read_array("backlinks_cumsum")
+	backlinks_cumsum, err := read_array("backlinks_cumsum.out")
 	if err != nil {
 		log.Fatal(err)
 	}
-	outlinks_count, err := read_array("outlinks_count")
+	outlinks_count, err := read_array("outlinks_count.out")
 	if err != nil {
 		log.Fatal(err)
 	}
