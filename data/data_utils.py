@@ -3,11 +3,10 @@ from collections import defaultdict
 
 def get_backlinks():
     """Returns a mapping from page ID to the list of pages that link to it"""
-    backlinks = np.fromfile(open('backlinks.out'), dtype=np.uint32)[1:]
-    backlinks_count = np.fromfile(open('backlinks_count.out'),
-                                  dtype=np.uint32)[1:]
-    backlinks_cumsum = np.fromfile(open('backlinks_cumsum.out'),
-                                   dtype=np.uint32)[1:]
+    dt = np.dtype('uint32').newbyteorder('<') # It's little endian data
+    backlinks = np.fromfile('backlinks.out', dtype=dt)[1:]
+    backlinks_count = np.fromfile('backlinks_count.out', dtype=dt)[1:]
+    backlinks_cumsum = np.fromfile('backlinks_cumsum.out', dtype=dt)[1:]
 
     output = {}
     for i in range(len(backlinks_count)):
@@ -29,7 +28,8 @@ def get_outlinks(backlinks):
 def get_pageranks():
     """Returns a mapping from page ID to the pagerank (from the pageranks.out
     file)"""
-    pageranks = np.fromfile(open('pageranks.out'), dtype=np.float32)[1:]
+    pageranks = np.fromfile('pageranks.out',
+                            dtype=np.dtype('float32').newbyteorder('<'))[1:]
     return {id:pagerank for id, pagerank in enumerate(pageranks)}
 
 def normalized_pageranks(pageranks):
@@ -37,3 +37,7 @@ def normalized_pageranks(pageranks):
     the lowest pagerank (this makes the numbers nicer) """
     minrank = min(pageranks.itervalues())
     return {id:pagerank/minrank for id, pagerank in pageranks.iteritems()}
+
+def get_restricted_pages():
+    """Returns a set of pages that we can't edit due to access restrictions"""
+    return set(np.fromfile('restricted_pages.out', dtype=np.dtype('<u4'))[1:])
