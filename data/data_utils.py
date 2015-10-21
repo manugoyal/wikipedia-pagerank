@@ -25,6 +25,12 @@ def get_outlinks(backlinks):
             output[backlink_id].append(id)
     return output
 
+def get_outlinks_count():
+    """Returns a mapping from page ID to the number of pages that it links to"""
+    outlinks_count = np.fromfile('outlinks_count.out',
+                                 dtype=np.dtype('uint32').newbyteorder('<'))[1:]
+    return {id:count for id,count in enumerate(outlinks_count)}
+
 def get_pageranks():
     """Returns a mapping from page ID to the pagerank (from the pageranks.out
     file)"""

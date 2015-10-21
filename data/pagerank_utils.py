@@ -26,9 +26,10 @@ def get_optimized_backlinks(backlinks):
     backlinks_cumsum = np.cumsum(backlinks_count)
     return backlinks_arr, backlinks_count, backlinks_cumsum
 
-def get_optimized_outlinks(outlinks):
-    """Turns the outlinks into outlinks_count"""
-    return np.array([len(outlinks[id]) for id in range(len(outlinks))])
+
+def get_optimized_outlinks_count(outlinks_count):
+    """Turns the outlinks_count dict into an array"""
+    return np.array(outlinks_count.values())
 
 def pagerank_iter(pageranks, backlinks, backlinks_count,
                   backlinks_cumsum, outlinks_count, num_pages, damping):
@@ -54,14 +55,15 @@ def compute_difference(pageranks, old_pageranks):
         diff += abs(pageranks[i] - old_pageranks[i])
     return diff / len(pageranks)
 
-def converge_pageranks(pageranks, backlinks, outlinks):
-    """Given the dictionary version of pageranks, backlinks, and outlinks,
+def converge_pageranks(pageranks, backlinks, outlinks_count):
+    """Given the dictionary version of pageranks, backlinks, and outlinks_count,
     re-runs pagerank until it converges"""
     pageranks = get_optimized_pageranks(pageranks)
     backlinks, backlinks_count, backlinks_cumsum = get_optimized_backlinks(
         backlinks)
-    outlinks_count = get_optimized_outlinks(outlinks)
+    outlinks_count = get_optimized_outlinks_count(outlinks_count)
     num_pages = get_num_pages(outlinks_count)
+
 
     new_pageranks = pageranks.copy()
     pagerank_iter(new_pageranks, backlinks, backlinks_count, backlinks_cumsum,
