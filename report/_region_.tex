@@ -1,0 +1,48 @@
+\message{ !name(report.tex)}\documentclass{article}
+\usepackage{graphicx}
+
+\title{Approaches to Scamming PageRank}
+\author{Manu Goyal, Don-Wook Shin, Luvsanbyamba Buyankhuu}
+\date{\today}
+
+\begin{document}
+
+\message{ !name(report.tex) !offset(-3) }
+
+
+\maketitle
+
+\section*{Introduction}
+
+The PageRank algorithm we studied in class is an effective way to sort pages by
+their relative importance. Unfortunately, there are numerous ways malicious
+users can modify the network in order to artificially increase the PageRank
+score of desired pages. We explore different exploitations of PageRank in the
+context of the Simple English Wikipedia network.
+
+\section*{Methods}
+
+We chose to use the Simple English Wikipedia network of pages, because it was a
+somewhat large, real-world dataset, but wasn't so large that experimenting with
+the data would become too cumbersome. The first thing we did was to calculate
+PageRank on the entire wikipedia network, using the standard PageRank algorithm
+(which we found on Wikipedia). After looking over the results we got, we devised
+two ways to scam the PageRank algorithm, to boost the rank of a specific page.
+
+\subsection*{Method 1: Create Links From Important Pages}
+
+This method is fairly straightforward. Since the rank of a page improves when
+other pages with a high rank link to it, somebody could easily improve the rank
+of a given Wikipedia page by linking other important pages to it.
+
+To see exactly how much this would improve the score, let $\pi_L$ be the rank of
+a low-ranked page, and $\pi_H$ be the rank of a high-ranked page that we will
+add a link to. Initially, after PageRank has converged $\pi_L$ will satisfy the
+equation $\pi_L = (1 - d) + d(\sum_{i=0}^n \frac{\pi_i}{L(i)}$, where $d$ is a
+damping factor for successive iterations of PageRank, and $L(i)$ is the number
+of outbound links for page $i$.
+
+
+\end{document}
+
+\message{ !name(report.tex) !offset(-48) }
