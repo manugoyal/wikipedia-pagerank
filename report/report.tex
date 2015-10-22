@@ -55,27 +55,20 @@ the next section.
 
 \subsection*{Method 2: Create New Pages with High Page Ranks}
 
-While the previous approach could work in the context of Wikipedia, where most
-users have access to most of the pages, in many scenarios, malicious users may
-have edit access to a very small set of pages. Therefore, we developed a second
-way by which to increase the pagerank of a desired page. The idea is to create a
-number of pages, each which link to each other in a sequence. Then, we link one
-existing page in the network to the first created page in the sequence, and we
-will have a sequence of pages with approximately the page rank of the existing
-page. Finally, we link all of these created pages to the one we want to improve
-the rank of.
+While the previous approach operated under the assumption that the malicious user 
+had only access to the pages that could be edited by any public user, we now consider 
+the situation where the malicious user has "admin access", e.g. has access to pages
+that may not be editable by the general public. These pages- including topics such as 
+Barack Obama, the United States, or Computers- tend to have very high page ranks.
+Whereas in the previous method, we may have to manipulate and create links in an arbitrarily
+large number of pages, this method allows us to inflate the page rank of the target page more efficiently.
 
-To see why this would work, note that with the standard pagerank algorithm, the
-amount of pagerank that a page transfers over to something that it links to is
-approximately equal to its pagerank divided by the number of links it has. So if
-we have an existing page with rank $\pi_e$ and number of outbound links $L(e)$,
-then our first created page, with only one incoming link, will have a pagerank
-close to $\frac{\pi_e}{L(e)}$. Then if this created page links to exactly one
-more created page and the page we want to boost, the second created page will
-have a pagerank of $\frac{\pi_e}{2*L(e)}$. We can continue to do this to create
-an arbitrary number of pages with a gradually decreasing pagerank. Then if all
-of these created pages links to our target page, we can increase its rank by a
-significant amount.
+\subsection*{Discussion of Other Methods}
+
+One of the restrictions Wikipedia places on its articles is that a page can link to another at most once. 
+We can sidestep this restriction and in essence create multiple links on one page to another by inserting artificial pages
+that serve as placeholders. As explained in method 1, the pagerank of the page would be increased by $d \frac{\pi_h}{L(h)+1}$
+per each link. Given $n$ new pages artificially created, we could amplify the pagerank effect by a factor of $n$.
 
 \section*{Evaluation}
 
@@ -107,7 +100,13 @@ to 100000, we fell short slightly. Again, due to the lack of pages that could
 lend very large scores to our target pages, we weren't able to reach up to
 100000, but the algorithm gets very close.
 
-\section*{Discussion}
+\subsection*{Method 2}
+The results of this method are similar to method 1's, but as expected, requires
+fewer pages and links, since the efficacy of each link is increased do to the
+higher pageranks. For brevity, we leave out the detailed analysis, which can be
+obtained in a manner almost mirrored to that in method 1.
+
+\section*{Discussion and Counter-Measures}
 
 Our automated tool for method 1 ended up performing very close to what was
 expected. Even though it uses rough calculations to estimate how much linking
@@ -118,4 +117,31 @@ of specific pages by enormous amounts. The major drawback to this method is that
 it is hard to implement in a context outside of wikipedia, where editing large
 numbers of important pages is not very feasible.
 
+When considering possible counter measures to page rank inflation, we considered
+any abnormalities that would differentiate an inflated page to a normal one.
+Obviously, being able to compare a before and after image of the wiki would
+provide a trivial solution, so we strove to find solutions that instead only
+look at the current state. The two solutions we found are explained as followed.
+
+First, we realized that our first method would result in a page that is not
+actually related in content to the pages it is linked by. For example, our
+method may create a link in the "Surfing" page to "Chocolate Muffins" based on
+the fact that "Surfing" has a high pagerank and will increase the latter
+substantially. By counting the number of alternate paths from one page to
+another, we can assess how related two pages actually are.
+
+Second, we realized that if we consider the pages linking to an authentically
+high pageranked page, these pages will have pageranks that are fairly evenly
+distributed. That is, a high ranked page will be linked to by both high ranked
+and low ranked pages. An artificially inflated page however, will be skewed with
+pages that are high as well. Therefore, we penalize pages that have an unusually
+high number of backlinks coming from very highly-ranked pages, since they are
+more likely to be artificially constructed.
+
+
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
